@@ -23,6 +23,7 @@ public class Main {
                             break;
                     }
                     Person person = new Person();
+
                     
             }
             System.out.println(Recursion.silnia(7));

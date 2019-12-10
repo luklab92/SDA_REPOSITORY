@@ -1,15 +1,21 @@
 package pl.sda.prework_programowanie1;
 
-public class Dog implements Animal{
+public class Dog extends Spiece implements Animal{
     private int age;
-    private String name;
      static int dogCounter=0;
      private int id;
+     private Person owner;
 
 
-    public Dog(String name,int age) {
+    public Dog(String firstName,int age, Person owner) {
+        super(firstName);
         this.age = age;
-        this.name = name;
+        this.owner=owner;
+        dogCounter++;
+    }
+    public Dog(String firstName,int age) {
+        super(firstName);
+        this.age = age;
         dogCounter++;
     }
 
@@ -33,10 +39,18 @@ public class Dog implements Animal{
 
     @Override
     public String getName() {
-        return this.name;
+        return this.getFirstName();
     }
+
+    @Override
+    public Person getOwner() {
+        return getOwner();
+    }
+
     @Override
     public String toString() {
-        return "I am "+this.name+" and I am "+this.age+" and this is my voice: "+getVoice();
+        if (owner!=null)
+        return "I am "+this.getFirstName()+" and I am "+this.age+" and this is my voice: "+getVoice()+", owner - "+owner.getFirstName()+" "+owner.getLastName();
+        return "I am "+this.getFirstName()+" and I am "+this.age+" and this is my voice: "+getVoice();
     }
 }

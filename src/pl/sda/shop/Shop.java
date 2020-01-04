@@ -59,19 +59,17 @@ public class Shop {
 
         create();
         while (rest.size() != que.size()) {
-            long personStartTime = System.nanoTime() / 1000000;
-            System.out.println("Type count of products in basket");
-            Scanner scanner = new Scanner(System.in);
-            int n = scanner.nextInt();
+            int n = (int) (Math.random() * (10)+1);
             System.out.println("Client" + que.element().getId() + " bought:");
             addProductsToBasket(n);
+            long personStartTime = System.nanoTime() / 1000;
             que.add(que.peek());
             Person temp = que.remove();
             rest.add(temp);
             shopping.put(temp, countPrice(list));
-            long personEndTime = System.nanoTime() / 1000000;
+            long personEndTime = System.nanoTime() / 1000;
             long duration = personEndTime - personStartTime;
-            System.out.println(shopping + " Time spend to service " + duration + "ms");
+            System.out.println(shopping + " Time spend to service " + duration + "us");
             allTime += duration;
             time.add(duration);
             countProduct.add(list.size());
@@ -82,9 +80,9 @@ public class Shop {
         System.out.println();
         System.out.println("Average time to service: " + allTime / clients + "ms");
         for (int i = 0; i < rest.size(); i++) {
-            System.out.println("Client" + (i + 1) + " bought " + countProduct.get(i) + " Products and paid: " + prices.get(i) + "$ and spend: " + time.get(i) + "ms");
+            System.out.println("Client" + (i + 1) + " bought " + countProduct.get(i) + " Products and paid: " + prices.get(i) + "$ and spend: " + time.get(i) + "us");
         }
-        //System.out.print("Time need to service [ms]: ");System.out.println(time);
+        System.out.println(que);
     }
 
 }

@@ -6,7 +6,7 @@ public class Product {
     private String name;
     private int price;
 
-    public Product() {
+    Product() {
         this.name = RandomStringUtils.randomAlphabetic(1).charAt(0) + RandomStringUtils.randomAlphabetic(5, 10).substring(1);
         this.price = (int) (Math.random() * 100 + 10);
     }
@@ -15,7 +15,7 @@ public class Product {
         return name;
     }
 
-    public int getPrice() {
+    int getPrice() {
         return price;
     }
 

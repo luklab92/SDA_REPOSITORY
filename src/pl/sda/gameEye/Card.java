@@ -4,7 +4,6 @@ import java.util.*;
 public class Card<E> {
     private Type type;
     private E value;
-    public int val;
 
     public E getValue() {
         return value;
@@ -22,7 +21,6 @@ public class Card<E> {
 
     public int getVal() {
         int val;
-
         if (value == CardValue.A) val = 11;
         else if (value == CardValue.J) val = 2;
         else if (value == CardValue.Q) val = 3;

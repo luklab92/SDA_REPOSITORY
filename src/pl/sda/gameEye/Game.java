@@ -12,6 +12,8 @@ public class Game {
     private List<Integer> temp2 = new LinkedList<>();
     private Queue players = new LinkedList<>();
     private int value;
+    private int choice;
+    private int numberOfPlayers;
 
     private Stack<Card> shuffle() {
         List<Card> shuffle = CreateStack.createCardStack();
@@ -52,7 +54,7 @@ public class Game {
             }
             System.out.println("Biorę kartę");
             System.out.println("Twoje karty na ręce: " + list);
-            System.out.println("Pozostało kart: " + stack.size());
+
             System.out.println("Liczba zgromadzonych oczek: " + value);
             isValueMoreThan21(list.size() - 1);
         }
@@ -75,6 +77,8 @@ public class Game {
     private void printChoice() {
         System.out.println("0 - Pozostaw");
         System.out.println("1 - Dobierz karte");
+        Scanner scanner2 = new Scanner(System.in);
+        choice = scanner2.nextInt();
     }
 
     private void restCards() {
@@ -85,7 +89,6 @@ public class Game {
                 if (21 - getValue() >= card.getVal())
                     numberOfAvailableCards++;
             }
-            System.out.println("Prawdopodobobienstwo wzięcia następnej karty: " + (int) ((numberOfAvailableCards / tail.size()) * 100) + "%");
             while (numberOfAvailableCards / tail.size() > 0.5 && isValueMoreThan21(list.size() - 1) <= 17 && stack.size() > 0)
                 nextCard();
         }
@@ -99,7 +102,8 @@ public class Game {
     }
 
     private void printScores() {
-        if (scorees.size() == 4) {
+
+        if (scorees.size() == players.size()+1) {
             if (temp.size() == 0) {
                 for (int i = 0; i < scorees.size(); i++) {
                     temp.add(i, 0);
@@ -122,9 +126,9 @@ public class Game {
             for (int i = 0; i < temp.size(); i++) {
                 temp.set(i, temp2.get(i));
             }
-            for (int i = 0; i < temp.size(); i++) {
+            /*for (int i = 0; i < temp.size(); i++) {
                 scorees.set(i, 0);
-            }
+            }*/
             temp2.removeAll(temp2);
         }
     }
@@ -153,8 +157,8 @@ public class Game {
             if (integer > largest) largest = integer;
         }
         for (int i = 0; i < temp.size(); i++) {
-            if (temp.get(i) == largest && i < 3) winners.add("Player" + (i + 1) + " ");
-            else if (i == 3 && temp.get(i) == largest) {
+            if (temp.get(i) == largest && i < numberOfPlayers) winners.add("Player" + (i + 1) + " ");
+            else if (i == numberOfPlayers && temp.get(i) == largest) {
                 winners.add("Computer ");
                 break;
             }
@@ -164,7 +168,6 @@ public class Game {
 
     private void prepareAGame() {
         stack = shuffle();
-        int numberOfPlayers;
         System.out.println("Podaj liczbę graczy");
         Scanner scanner = new Scanner(System.in);
         numberOfPlayers = scanner.nextInt();
@@ -176,58 +179,56 @@ public class Game {
 
     public void playAGame() {
         prepareAGame();
-        int choice;
-        int counter = 1;
+        int counter=1;
         while (stack.size() > 1) {
-            System.out.println("Usunięte karty: " + removed);
-            System.out.println();
             System.out.println("Player " + players.peek());
             players.add(players.peek());
             players.remove();
             generateCardsForPlayer();
             while (value <= 21) {
                 printChoice();
-                Scanner scanner2 = new Scanner(System.in);
-                choice = scanner2.nextInt();
                 if (choice == 1) {
                     System.out.println(value);
                     nextCard();
-                    if (value <= 21) {
-                    } else {
+                    if (value > 21) {
                         if ((int) players.peek() != 1) {
                             System.out.println(value);
                             removed.addAll(list);
                             scorees.set(counter - 1, value);
-                            if (counter < 3) counter++;
-                            else counter = 1;
+                            if (counter < numberOfPlayers) counter++;
                         } else {
                             scorees.set(counter - 1, value);
                             counter++;
                             printComputer();
-                            if (scorees.size() == 4) {
+                            if (scorees.size() == numberOfPlayers+1) {
+                                System.out.println("counter: "+counter);
                                 scorees.set(scorees.size() - 1, value);
                             } else {
-                                scorees.add(players.size(), value);
+                                scorees.add(scorees.size(), value);
                             }
                             showScore();
                         }
                         break;
                     }
                 } else if (choice == 0 || value > 21) {
+                    System.out.println("counter: "+counter);
                     scorees.set(counter - 1, value);
                     removed.addAll(list);
 
-                    if (counter < 3) counter++;
-                    else counter = 1;
-
+                    if (counter < numberOfPlayers) counter++;
+else counter=1;
                     if ((int) players.peek() == 1) {
                         counter++;
                         printComputer();
-                        if (scorees.size() == 4) {
+                        if (scorees.size() == numberOfPlayers+1) {
+                            System.out.println("counter: "+counter);
                             scorees.set(scorees.size() - 1, value);
                         } else {
-                            scorees.add(players.size(), value);
+                            System.out.println("counter: "+counter);
+                            scorees.add(scorees.size(), value);
                         }
+                        counter=1;
+                        System.out.println(scorees);
                         showScore();
                     }
                     break;

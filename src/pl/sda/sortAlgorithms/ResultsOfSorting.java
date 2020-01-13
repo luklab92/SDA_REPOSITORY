@@ -1,11 +1,6 @@
 package pl.sda.sortAlgorithms;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import java.util.LinkedList;
-import java.util.List;
-
-public class ResultsOfSorting<E> {
+public class ResultsOfSorting {
 
     private int sortId;
     private String SortName;

@@ -1,57 +1,58 @@
 package pl.sda.sortAlgorithms;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class HybridSort implements SortAlgorithm,Comparable {
+public class HybridSort implements SortAlgorithm {
 
     @Override
-    public List<Integer> sort(List<Integer> items) {
-        return sortInner(items);
+    public <E>List<E> sort(List<E> items, Comparator<E> comparator) {
+        return sortInner(items,comparator);
     }
 
-    private List<Integer> sortInner(List<Integer> myData) {
-        List<Integer> items = new LinkedList<>();
-        items.addAll(myData);
-        List<Integer> smaller;
-        List<Integer> greater;
-        List<Integer> exactlyPivot;
+    private <E>List<E> sortInner(List<E> myData, Comparator<E> comparator) {
+        List<E> items = new LinkedList<>(myData);
+        List<E> smaller;
+        List<E> greater;
+        List<E> exactlyPivot;
 
         if (items.isEmpty() || items.size() == 1) return items;
-        int pivot = items.get(items.size() / 2);
+        E pivot = items.get(items.size() / 2);
 
         smaller = items.stream()
-                .filter(x -> x < pivot)
+                .filter(x -> comparator.compare(x,pivot)<0)
                 .collect(Collectors.toList());
         greater = items.stream()
-                .filter(x -> x > pivot)
+                .filter(x -> comparator.compare(x,pivot)>0)
                 .collect(Collectors.toList());
         exactlyPivot = items.stream()
-                .filter(x -> x == pivot)
+                .filter(x -> comparator.compare(x,pivot)==0)
                 .collect(Collectors.toList());
         if (smaller.size() != 0 && greater.size() != 0 && (smaller.size() < 123 && greater.size() < 123)) {
-            sortChoice(greater);
-            sortChoice(smaller);
+            sortChoice(greater,comparator);
+            sortChoice(smaller,comparator);
         }
             return Stream.of(
-                    sort(smaller),
+                    sort(smaller,comparator),
                     exactlyPivot,
-                    sort(greater)
+                    sort(greater,comparator)
             ).flatMap(Collection::stream)
                     .collect(Collectors.toList());
     }
 
 
-    private List<Integer> sortChoice(List<Integer> myData) {
+    private <E>List<E> sortChoice(List<E> myData, Comparator<E> comparator) {
 
-        int index, min;
+        int index;
+        E min;
         for (int i = 1; i < myData.size(); i++) {
             index = i;
             for (int j = i + 1; j < myData.size(); j++) {
-                if (myData.get(j) < myData.get(index)) {
+                if (comparator.compare(myData.get(j),myData.get(index))<0) {
                     index = j;
                 }
 
@@ -68,9 +69,5 @@ public class HybridSort implements SortAlgorithm,Comparable {
         return "Hybrid sort";
     }
 
-    @Override
-    public int compareTo(Object o) {
-        return 0;
-    }
 }
 

@@ -39,6 +39,27 @@ public class Heap {
         }
         return true;
     }
+    public int returnParent(int x) {
+        return ints.get((x-1)/2);
+    }
+    public int returnLeftChild(int x) {
+        if (isLeftChildExist(x)) return ints.get((2*x)+1);
+        return -1;
+    }
+    public int returnRightChild(int x) {
+        if (isRightChildExist(x)) return ints.get((2*x)+2);
+        return -1;
+    }
+    public boolean isRightChildExist(int x) {
+        return (2*x+2)<ints.size()-1;
+    }
+    public boolean isLeftChildExist(int x) {
+        return (2*x+1)<ints.size()-1;
+    }
+    public boolean isNodeALeaf(int x) {
+        return (2*x+2)>ints.size()-1;
+    }
+
 
     public void makeHeapCorrect() {
         for (int x = ints.size(); x > 0; x--) {

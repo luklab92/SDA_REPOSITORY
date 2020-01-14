@@ -1,4 +1,4 @@
-package pl.sda.Tree;
+package pl.sda.TreeAndHeap;
 
 public class Node<E>{
         private Node<E> left;

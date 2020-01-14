@@ -1,4 +1,4 @@
-package pl.sda.Tree;
+package pl.sda.TreeAndHeap;
 
 import java.util.Arrays;
 import java.util.LinkedList;

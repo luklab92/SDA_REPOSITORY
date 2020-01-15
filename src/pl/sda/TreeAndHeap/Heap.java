@@ -9,6 +9,8 @@ public class Heap {
             Arrays.asList(12, 11, 1, 7, 5, 4)
     );
     private int i, j;
+    private List<Integer> sortedList = new LinkedList<>();
+    private List<Integer> tempList = new LinkedList<>();
 
     private void swap() {
         int temp = ints.get(i);
@@ -83,10 +85,29 @@ public class Heap {
         return (2 * x + 2) > ints.size() - 1;
     }
 
-    public void pop() {
+
+    public void pop(){
         ints.set(0, ints.get(ints.size() - 1));
         ints.remove(ints.size() - 1);
         makeHeapCorrectFromRoot();
+    }
+
+    //Heapsort method
+    private void popToSortedList() {
+        sortedList.add(ints.get(0));
+        ints.set(0, ints.get(ints.size() - 1));
+        ints.remove(ints.size() - 1);
+        makeHeapCorrectFromRoot();
+    }
+
+    public List<Integer> getSorted(){
+        tempList.clear();
+        tempList.addAll(ints);
+        while (ints.size()>0) {
+            popToSortedList();
+        }
+        ints.addAll(tempList);
+        return sortedList;
     }
 
     public void print() {

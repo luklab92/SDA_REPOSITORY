@@ -1,57 +1,82 @@
 package pl.sda.Hanoi;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
 
 public class Game {
-    private MyStack myStack = new MyStack();
-    private long startTime;
 
+    private List<Stack<Integer>> listOfStacks = new LinkedList<>();
+    private int lowerBarrier, upperBarrier;
 
-    private void prepareAGame(int init) {
-        myStack.addElementsToStack(init);
+    private void createStacks() {
+        for (int i = 1; i <=3; i++) {
+            Stack<Integer> stack = new Stack<>();
+            listOfStacks.add(stack);
+        }
     }
 
-    public void doAction(int init) {
+    private void addElementsToStack(int init) {
+        createStacks();
+        for (int i = init; i >0; i--) {
+            listOfStacks.get(0).add(i);
+        }
+    }
+    private void prepareAGame(int init) {
+        addElementsToStack(init);
+    }
+
+    private boolean enfOfTheGameCheck (int init) {
+        int lastTower = 2;
+        return (listOfStacks.get(lastTower).size() !=init);
+    }
+
+    private boolean isMoveCorrect(int to, int from) {
+        return (to < 1 || to > 3 || from < 1 || from > 3);
+    }
+
+    private void userMove() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Type Stack 1-3");
+        System.out.println(listOfStacks);
+        System.out.println("Get number from Stack");
+        lowerBarrier = scanner.nextInt();
+        System.out.println("Give number into Stack");
+        upperBarrier = scanner.nextInt();
+    }
+
+    public void playAGame(int init) {
+        int counter = 0;
         prepareAGame(init);
-        int from,to;
-        int counter =0;
-        while (myStack.getListOfStacks().get(2).size() != init) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Type Stack 1-3");
-            System.out.println(myStack.getListOfStacks());
-            System.out.println("Get number from Stack");
-            from = scanner.nextInt();
-                System.out.println("Give number into Stack");
-                to = scanner.nextInt();
-                if (to < 1 || to >3 || from < 1 || from > 3) {
-                    System.out.println("Podaj prawidłową wartość");
-                }else {
-                    int temp = myStack.getListOfStacks().get(from - 1).peek();
-                    myStack.getListOfStacks().get(to - 1).add(temp);
-                    if (isStackCorrect(to - 1)) {
-                        myStack.getListOfStacks().get(from - 1).pop();
-                        System.out.println(myStack.getListOfStacks());
-                    } else {
-                        myStack.getListOfStacks().get(to - 1).pop();
-                        System.out.println("Nie można wykonać operacji");
-                    }
-                    counter++;
+        long startTime = System.nanoTime();
+        while (enfOfTheGameCheck(init)) {
+            userMove();
+            if (isMoveCorrect(upperBarrier, lowerBarrier)) {
+                System.out.println("Type correct value");
+            } else {
+                int peekValue = listOfStacks.get(lowerBarrier - 1).peek();
+                listOfStacks.get(upperBarrier - 1).add(peekValue);
+                if (isStackCorrect(upperBarrier - 1)) {
+                    listOfStacks.get(lowerBarrier - 1).pop();
+                    System.out.println(listOfStacks);
+                } else {
+                    listOfStacks.get(upperBarrier - 1).pop();
+                    System.out.println("You cannot do this move");
                 }
-            startTime = System.nanoTime();
-                }
-        long endTime = System.nanoTime();
-        long duration = endTime-startTime;
-        System.out.println("Wygrałeś, liczba kroków " + counter+ " w czasie: "+duration/1000000+"s");
+                counter++;
             }
-
-
+        }
+        long endTime = System.nanoTime();
+        long duration = endTime - startTime;
+        System.out.println("You won, number of steps " + counter + " in time: " + duration / 1000000000 + "s");
+    }
 
     private boolean isStackCorrect(int index) {
-Stack<Integer> temp = myStack.getListOfStacks().get(index);
+        Stack<Integer> temp = listOfStacks.get(index);
 
-        if (temp.size()>1) {
-            return temp.get(temp.size()-1) < temp.get(temp.size()-2);
+        if (temp.size() > 1) {
+            return temp.get(temp.size() - 1) < temp.get(temp.size() - 2);
         }
         return true;
     }

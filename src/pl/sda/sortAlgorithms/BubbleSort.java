@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BubbleSort<E> implements SortAlgorithm{
+public class BubbleSort implements SortAlgorithm{
     @Override
     public <E>List<E> sort(List<E> items, Comparator<E> comparator) {
         E temp;
@@ -24,11 +24,8 @@ public class BubbleSort<E> implements SortAlgorithm{
         return list1;
     }
 
-
-
     @Override
     public String sayHello() {
         return "Bubble sort";
     }
-
 }

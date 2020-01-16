@@ -13,7 +13,7 @@ public class CompareSort {
     private List<Long> durationList = new LinkedList<>();
     private List<Integer> testList2 = new LinkedList<>();
     private List<String> testStringList = new LinkedList<>();
-    private List<SortAlgorithm> sortAlgorithms = asList(new quickSort(), new BubbleSort(), new ChoiceSort(), new HybridSort());
+    private List<SortAlgorithm> sortAlgorithms = asList(new quickSort(), new BubbleSort(), new ChoiceSort(), new HybridSort(), new HeapSort());
     private List<ResultsOfSorting> resultsOfSorting = new LinkedList<>();
 
     private List<Integer> createRandomShuffleList(int a) {
@@ -65,11 +65,9 @@ public class CompareSort {
             testList2 = createRandomShuffleList(integer);
             System.out.println("Sortowana lista: " + testList2);
             for (SortAlgorithm s : sortAlgorithms) {
-                //System.out.println(testList2);
                 System.out.println(s.sayHello());
                 long startTime = System.nanoTime();
-                s.sort(testList2, Integer::compareTo);
-                //System.out.println(s.sort(testList2,Integer::compareTo));
+                System.out.println(s.sort(testList2, Integer::compareTo));
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime) / 1000;
                 durationList.add(duration);
@@ -127,14 +125,5 @@ public class CompareSort {
             }
         }
         return fastestLongest;
-    }
-
-    private List<Integer> createReversedList(int a) {
-        List<Integer> testList = new LinkedList<>();
-        for (int i = 1; i <= a; i++) {
-            testList.add(i);
-        }
-        Collections.reverse(testList);
-        return testList;
     }
 }

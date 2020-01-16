@@ -15,9 +15,9 @@ import java.util.Stack;
         }
     }
 
-     void addElementsToStack() {
+     void addElementsToStack(int init) {
         createStacks();
-        for (int i = 5; i >0; i--) {
+        for (int i = init; i >0; i--) {
             listOfStacks.get(0).add(i);
         }
     }

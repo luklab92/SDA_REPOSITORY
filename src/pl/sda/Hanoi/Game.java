@@ -5,17 +5,18 @@ import java.util.Stack;
 
 public class Game {
     private MyStack myStack = new MyStack();
+    private long startTime;
 
 
-    private void prepareAGame() {
-        myStack.addElementsToStack();
+    private void prepareAGame(int init) {
+        myStack.addElementsToStack(init);
     }
 
-    public void doAction() {
-        prepareAGame();
+    public void doAction(int init) {
+        prepareAGame(init);
         int from,to;
         int counter =0;
-        while (myStack.getListOfStacks().get(2).size() != 5) {
+        while (myStack.getListOfStacks().get(2).size() != init) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Type Stack 1-3");
             System.out.println(myStack.getListOfStacks());
@@ -37,8 +38,11 @@ public class Game {
                     }
                     counter++;
                 }
+            startTime = System.nanoTime();
                 }
-        System.out.println("Wygrałeś, " + "Liczba kroków " + counter);
+        long endTime = System.nanoTime();
+        long duration = endTime-startTime;
+        System.out.println("Wygrałeś, liczba kroków " + counter+ " w czasie: "+duration/1000000+"s");
             }
 
 

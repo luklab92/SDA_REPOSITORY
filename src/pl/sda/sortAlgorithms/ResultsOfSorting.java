@@ -14,7 +14,6 @@ public class ResultsOfSorting {
         this.SortName=SortName;
     }
 
-
     @Override
     public String toString() {
         return "ResultsOfSorting{" +
@@ -23,5 +22,21 @@ public class ResultsOfSorting {
                 ", sortLenghth=" + sortLenghth +
                 ", sortDuration=" + sortDuration;
 
+    }
+
+    public int getSortId() {
+        return sortId;
+    }
+
+    public String getSortName() {
+        return SortName;
+    }
+
+    public long getSortDuration() {
+        return sortDuration;
+    }
+
+    public int getSortLenghth() {
+        return sortLenghth;
     }
 }

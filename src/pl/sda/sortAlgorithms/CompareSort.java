@@ -10,10 +10,6 @@ import static java.util.Arrays.asList;
 
 public class CompareSort {
 
-    private List<Long> durationList = new LinkedList<>();
-    private List<Integer> testList2 = new LinkedList<>();
-    private List<String> testStringList = new LinkedList<>();
-    private List<SortAlgorithm> sortAlgorithms = asList(new quickSort(), new BubbleSort(), new ChoiceSort(), new HybridSort(), new HeapSort());
     private List<ResultsOfSorting> resultsOfSorting = new LinkedList<>();
 
     private List<Integer> createRandomShuffleList(int a) {
@@ -33,33 +29,37 @@ public class CompareSort {
         return testList;
     }
 
-
-    public void sortStringCompare(List<Integer> list) {
+    public List<ResultsOfSorting> sortStringCompare(List<Integer> list) {
+        List<SortAlgorithm> sortAlgorithms = asList(new quickSort(), new BubbleSort(), new ChoiceSort(), new HybridSort(), new HeapSort());
         int counter = 1;
-
+        List<ResultsOfSorting> resultList = new LinkedList<>();
+        List<String> testStringList;
         for (Integer integer : list) {
             testStringList = createRandomStringLIst(integer);
             System.out.println("Sortowana lista: " + testStringList);
             for (SortAlgorithm s : sortAlgorithms) {
                 System.out.println(s.sayHello());
                 long startTime = System.nanoTime();
-                //s.sort(testStringList, String::compareTo);
-                System.out.println(s.sort(testStringList, String::compareTo));
+                s.sort(testStringList, String::compareTo);
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime) / 1000;
-                durationList.add(duration);
+                //durationList.add(duration);
+                ResultsOfSorting res = new ResultsOfSorting(counter, s.sayHello(), duration, getList().size());
                 System.out.println("Sortowanie trwało: " + duration + "ms");
-                System.out.println("Dlugosc listy: " + testStringList.size());
-                System.out.println();
+                System.out.println("Dlugosc listy: " + testStringList.size() + "\n");
                 ResultsOfSorting result = new ResultsOfSorting(counter, s.sayHello(), duration, testStringList.size());
                 resultsOfSorting.add(result);
                 counter++;
+                resultList.add(res);
             }
             printStringResults();
         }
+        return resultList;
     }
 
     public void sortCompare(List<Integer> list) {
+        List<SortAlgorithm> sortAlgorithms = asList(new quickSort(), new BubbleSort(), new ChoiceSort(), new HybridSort(), new HeapSort());
+        List<Integer> testList2 = new LinkedList<>();
         int counter = 1;
         for (Integer integer : list) {
             testList2 = createRandomShuffleList(integer);
@@ -70,7 +70,6 @@ public class CompareSort {
                 System.out.println(s.sort(testList2, Integer::compareTo));
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime) / 1000;
-                durationList.add(duration);
                 System.out.println("Sortowanie trwało: " + duration + "ms");
                 System.out.println("Dlugosc listy: " + testList2.size());
                 System.out.println();
@@ -87,43 +86,40 @@ public class CompareSort {
     }
 
     private void printResults() {
-        for (int i = 0; i < testList2.size(); i++) {
-            //System.out.println("Sortowana lista: " + testList2);
-            System.out.println("Długość listy: " + testList2.size());
-            System.out.println("Najkrótsze sortowanie: " + sortAlgorithms.get(findFastestLongest().get(0)).sayHello() + " " + Collections.min(durationList) + "ms");
-            System.out.println("Najdłuższe sortowanie: " + sortAlgorithms.get(findFastestLongest().get(1)).sayHello() + " " + Collections.max(durationList) + "ms");
-            System.out.println();
-            durationList.clear();
-            testList2.clear();
-        }
+        //System.out.println("Sortowana lista: " + testList2);
+        System.out.println("Długość listy: " + getList().size());
+        System.out.println("Najkrótsze sortowanie: " + findIndexOfFastestLongest().get(0).getSortName() + " " + findIndexOfFastestLongest().get(0).getSortDuration() + "ms");
+        System.out.println("Najdłuższe sortowanie: " + findIndexOfFastestLongest().get(1).getSortName() + " " + findIndexOfFastestLongest().get(1).getSortDuration() + "ms");
+        System.out.println();
+        findIndexOfFastestLongest().clear();
     }
 
     private void printStringResults() {
-        for (int i = 0; i < testStringList.size(); i++) {
-            //System.out.println("Sortowana lista: " + testList2);
-            System.out.println("Długość listy: " + testStringList.size());
-            System.out.println("Najkrótsze sortowanie: " + sortAlgorithms.get(findFastestLongest().get(0)).sayHello() + " " + Collections.min(durationList) + "ms");
-            System.out.println("Najdłuższe sortowanie: " + sortAlgorithms.get(findFastestLongest().get(1)).sayHello() + " " + Collections.max(durationList) + "ms");
-            System.out.println();
-            durationList.clear();
-            testStringList.clear();
-        }
+        //System.out.println("Sortowana lista: " + testList2);
+        System.out.println("Długość listy: " + getList().size());
+        System.out.println("Najkrótsze sortowanie: " + findIndexOfFastestLongest().get(0).getSortName() + " " + findIndexOfFastestLongest().get(0).getSortDuration() + "ms");
+        System.out.println("Najdłuższe sortowanie: " + findIndexOfFastestLongest().get(1).getSortName() + " " + findIndexOfFastestLongest().get(1).getSortDuration() + "ms");
+        System.out.println();
+        findIndexOfFastestLongest().clear();
     }
 
-    private List<Integer> findFastestLongest() {
-        List<Integer> fastestLongest = new LinkedList<>();
-        for (int i = 0; i < durationList.size(); i++) {
-            if (durationList.get(i).equals(Collections.min(durationList))) {
-                fastestLongest.add(i);
-                break;
+    private List<ResultsOfSorting> findIndexOfFastestLongest() {
+        List<ResultsOfSorting> fastestLongest = new LinkedList<>();
+        ResultsOfSorting min = resultsOfSorting.get(resultsOfSorting.size() - 1);
+        for (int i = resultsOfSorting.size() - 4; i < resultsOfSorting.size(); i++) {
+            if (resultsOfSorting.get(i).getSortDuration() < min.getSortDuration()) {
+                min = resultsOfSorting.get(i);
             }
         }
-        for (int i = 0; i < durationList.size(); i++) {
-            if (durationList.get(i).equals(Collections.max(durationList))) {
-                fastestLongest.add(i);
-                break;
+        ResultsOfSorting max = resultsOfSorting.get(resultsOfSorting.size() - 1);
+        for (int i = resultsOfSorting.size() - 4; i < resultsOfSorting.size(); i++) {
+            if (resultsOfSorting.get(i).getSortDuration() > max.getSortDuration()) {
+                max = resultsOfSorting.get(i);
             }
         }
+        fastestLongest.add(min);
+        fastestLongest.add(max);
+
         return fastestLongest;
     }
 }

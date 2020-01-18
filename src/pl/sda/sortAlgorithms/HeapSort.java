@@ -52,7 +52,7 @@ private <E>boolean isHeapCorrectFromRoot(List<E> ints, Comparator<E> comparator)
 
     @Override
     public String sayHello() {
-        return "I am heapSort";
+        return "HeapSort";
 
     }
     }

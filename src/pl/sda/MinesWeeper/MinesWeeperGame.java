@@ -3,11 +3,12 @@ package pl.sda.MinesWeeper;
 import java.util.Scanner;
 
 class MinesWeeperGame {
-
     private int size;
-    private String[][] array;
+    private int numberOfBombs;
+    private String[][] filledArray;
     private String[][] playerArray;
-
+    private boolean gameLost = false;
+    private int currentNumberOfBombs;
 
     private void getSize() {
         Scanner scanner = new Scanner(System.in);
@@ -15,25 +16,9 @@ class MinesWeeperGame {
         size = scanner.nextInt();
     }
 
-    private void createArray() {
-        getSize();
-        array = new String[size][size];
-
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                array[i][j] = "0";
-            }
-        }
-        makeBombs();
-        System.out.println("Completed Array");
-        fillArrayWithNumbers();
-        printCompletedArray();
-        initPlayerArray();
-    }
-
-    private void printCompletedArray() {
+    private void createArray(String[][] arrays) {
         System.out.print("  ");
-        for (int i = 1; i <= size; i++) {
+        for (int i = 0; i < size; i++) {
             System.out.print(i + " ");
         }
         System.out.print("\n  ");
@@ -41,15 +26,30 @@ class MinesWeeperGame {
             System.out.print("- ");
         }
         System.out.println();
-        for (int i = 0; i < array.length; i++) {
-            String[] strings = array[i];
-            System.out.print((i + 1) + "|");
-            for (int j = 0; j < array.length; j++) {
+        for (int i = 0; i < arrays.length; i++) {
+            String[] strings = arrays[i];
+            System.out.print((i) + "|");
+            for (int j = 0; j < arrays.length; j++) {
                 System.out.print(strings[j] + " ");
             }
             System.out.println();
         }
         System.out.println();
+    }
+
+    private void createCompletedAraay() {
+        getSize();
+        filledArray = new String[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                filledArray[i][j] = "0";
+            }
+        }
+        makeBombs();
+        fillCompletedArrayWithNumbers();
+        System.out.println("Filled Array");
+        createArray(filledArray);
+        initPlayerArray();
     }
 
     private void initPlayerArray() {
@@ -61,42 +61,20 @@ class MinesWeeperGame {
         }
     }
 
-    private void printPlayerArray() {
-        System.out.println("Player's Array");
-        System.out.print("  ");
-        for (int i = 1; i <= size; i++) {
-            System.out.print(i + " ");
-        }
-        System.out.print("\n  ");
-        for (int i = 0; i < size; i++) {
-            System.out.print("- ");
-        }
-        System.out.println();
-        for (int i = 0; i < playerArray.length; i++) {
-            String[] strings = playerArray[i];
-            System.out.print((i + 1) + "|");
-            for (int j = 0; j < playerArray.length; j++) {
-                System.out.print(strings[j] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
-    private boolean ifStatementForMakeBombs() {
-        return Math.random() > 0.95;
+    private boolean statementForMakeBombs() {
+        return Math.random() > 0.98;
     }
 
     private void makeBombs() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Type number of Bombs");
-        int numberOfBombs = scanner.nextInt();
+        numberOfBombs = scanner.nextInt();
         int counter = 0;
         while (counter < numberOfBombs) {
-            for (int i = 0; i < array.length; i++) {
-                for (int j = 0; j < array.length; j++) {
-                    if (ifStatementForMakeBombs() && counter < numberOfBombs && array[i][j].equals("0")) {
-                        array[i][j] = "B";
+            for (int i = 0; i < filledArray.length; i++) {
+                for (int j = 0; j < filledArray.length; j++) {
+                    if (statementForMakeBombs() && counter < numberOfBombs && filledArray[i][j].equals("0")) {
+                        filledArray[i][j] = "B";
                         counter++;
                     }
                 }
@@ -104,17 +82,17 @@ class MinesWeeperGame {
         }
     }
 
-    private void fillArrayWithNumbers() {
+    private void fillCompletedArrayWithNumbers() {
         int min = 0;
-        int max = array.length;
+        int max = filledArray.length;
         for (int i = min; i < max; i++) {
             for (int j = min; j < max; j++) {
-                if (array[i][j].equals("B")) {
+                if (filledArray[i][j].equals("B")) {
                     for (int k = i - 1; k <= i + 1; k++) {
                         for (int l = j - 1; l <= j + 1; l++) {
-                            if (l >= 0 && k >= 0 && l < max && k < max && array[k][l] != null && !array[k][l].equals("B")) {
-                                int x = Integer.parseInt(array[k][l]) + 1;
-                                array[k][l] = Integer.toString(x);
+                            if (l >= 0 && k >= 0 && l < max && k < max && filledArray[k][l] != null && !filledArray[k][l].equals("B")) {
+                                int x = Integer.parseInt(filledArray[k][l]) + 1;
+                                filledArray[k][l] = Integer.toString(x);
                             }
                         }
                     }
@@ -130,11 +108,31 @@ class MinesWeeperGame {
         return scanner.nextInt();
     }
 
+    private void userMove() {
+        int choice = userChoice();
+        while (choice < 1 || choice > 2) {
+            choice = userChoice();
+        }
+        int x = userTypeRow();
+        int y = userTypeColumn();
+        if (choice == 1) {
+            if (filledArray[x][y].equals("0")) {
+                fillArrayWithRecursionIfYouHitZero(x, y);
+            } else if (filledArray[x][y].equals("B")) {
+                playerArray[x][y] = "X";
+                gameLost = true;
+            } else {
+                playerArray[x][y] = filledArray[x][y];
+            }
+        }
+        if (choice == 2) setBomb(x, y);
+    }
+
     private int userTypeRow() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Type row");
         int x = scanner.nextInt();
-        while (x < 1 || x > size) {
+        while (x < 0 || x >= size) {
             System.out.println("Type row");
             x = scanner.nextInt();
         }
@@ -145,7 +143,7 @@ class MinesWeeperGame {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Type column");
         int y = scanner.nextInt();
-        while (y < 1 || y > size) {
+        while (y < 0 || y >= size) {
             System.out.println("Type column");
             y = scanner.nextInt();
         }
@@ -153,76 +151,102 @@ class MinesWeeperGame {
     }
 
     private void setBomb(int x, int y) {
-        playerArray[x][y] = "B";
-    }
-
-    private boolean endGamePlayerLoseStatement(int x, int y) {
-        return (array[x - 1][y - 1].equals("B"));
-    }
-
-    private void userMove() {
-        int choice = userChoice();
-        while (choice < 1 || choice > 2) {
-            choice = userChoice();
-        }
-        int x = userTypeRow();
-        int y = userTypeColumn();
-        if (choice == 1) {
-            if (array[x - 1][y - 1].equals("0")) {
-                printZerosAround(x, y);
-            } else {
-                playerArray[x - 1][y - 1] = array[x - 1][y - 1];
-            }
-            if (endGamePlayerLoseStatement(x, y)) {
-                System.out.println("You lost");
-            } else printPlayerArray();
-        }
-        if (choice == 2) setBomb(x, y);
+        if (numberOfBombs > currentNumberOfBombs) {
+            if (playerArray[x][y].equals("#")) playerArray[x][y] = "B";
+            else System.out.println("Pole jest juz zajęte");
+            currentNumberOfBombs++;
+        } else System.out.println("Nie możesz juz wstawić więcej bomb!!");
     }
 
     private boolean endOfTheGame() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (!playerArray[i][j].equals(array[i][j])) return false;
+                if (!playerArray[i][j].equals(filledArray[i][j])) return false;
             }
         }
         System.out.println("You won");
         return true;
     }
 
-    private void printZerosAround(int x, int y) {
-        x = x - 1;
-        y = y - 1;
+    private void printNumbersAround(int x, int y) {
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
-                if (j >= 0 && i >= 0 && j < size && i < size && array[i][j] != null)
-                    playerArray[i][j] = array[i][j];
+                if (j >= 0 && i >= 0 && j < size && i < size && filledArray[i][j] != null)
+                    playerArray[i][j] = filledArray[i][j];
+            }
+        }
+    }
+
+    private boolean isHashAround(int x, int y) {
+        for (int i = x - 1; i <= x + 1; i++) {
+            for (int j = y - 1; j <= y + 1; j++) {
+                if (j >= 0 && i >= 0 && j < size && i < size && filledArray[i][j] != null) {
+                    if (playerArray[i][j].equals("#")) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean canDoRecursion(int indexX, int indexY) {
+        return filledArray[indexX][indexY].equals("0") && isHashAround(indexX, indexY);
+    }
+
+    private void fillArrayWithRecursionIfYouHitZero(int x, int y) {
+        printNumbersAround(x, y);
+        if (x >= 0 && x < size && y >= 0 && y < size) {
+            if (x > 0) {
+                int indexX = x - 1;
+                if (canDoRecursion(indexX, y)) fillArrayWithRecursionIfYouHitZero(indexX, y);
+            }
+            if (y > 0) {
+                int indexY = y - 1;
+                if (canDoRecursion(x, indexY)) fillArrayWithRecursionIfYouHitZero(x, indexY);
+            }
+            if (x < size - 1) {
+                int indexX = x + 1;
+                if (canDoRecursion(indexX, y)) fillArrayWithRecursionIfYouHitZero(indexX, y);
+            }
+
+            if (y < size - 1) {
+                int indexY = y + 1;
+                if (canDoRecursion(x, indexY)) fillArrayWithRecursionIfYouHitZero(x, indexY);
+            }
+            if (x > 0 && y > 0) {
+                int indexX = x - 1;
+                int indexY = y - 1;
+                if (canDoRecursion(indexX, indexY)) fillArrayWithRecursionIfYouHitZero(indexX, indexY);
+            }
+            if (x > 0 && y < size - 1) {
+                int indexX = x - 1;
+                int indexY = y + 1;
+                if (canDoRecursion(indexX, indexY)) fillArrayWithRecursionIfYouHitZero(indexX, indexY);
+            }
+            if (x < size - 1 && y > 0) {
+                int indexX = x + 1;
+                int indexY = y - 1;
+                if (canDoRecursion(indexX, indexY)) fillArrayWithRecursionIfYouHitZero(indexX, indexY);
+            }
+            if (x < size - 1 && y < size - 1) {
+                int indexX = x + 1;
+                int indexY = y + 1;
+                if (canDoRecursion(indexX, indexY)) fillArrayWithRecursionIfYouHitZero(indexX, indexY);
             }
         }
     }
 
     void playAGame() {
-        createArray();
-        printPlayerArray();
+        createCompletedAraay();
+        System.out.println("Player's Array");
+        createArray(playerArray);
         while (!endOfTheGame()) {
             userMove();
+            if (gameLost) {
+                System.out.println("You lost");
+                break;
+            }
+            System.out.println("Player's Array");
+            createArray(playerArray);
         }
     }
 }
-
-    /*//recursion to do
-    private void printRecZerosInner(int x, int y) {
-        int i = 0;
-        int j = 0;
-        while ((array[x][y + 1].equals("0") || array[x + 1][y].equals("0") || array[x - 1][y].equals("0") || array[x][y - 1].equals("0")) && (x > 0 && y > 0 && x < size && y < size && array[i][j] != null)) {
-            for (i = x - 1; i <= x + 1; i++) {
-                for (j = y - 1; j <= y + 1; j++) {
-                    if (j >= 0 && i >= 0 && j < size && i < size && array[i][j] != null)
-                        playerArray[i][j] = array[i][j];
-                }
-            }
-            printPlayerArray();
-            x = i;
-            y = j;
-        }
-    }*/

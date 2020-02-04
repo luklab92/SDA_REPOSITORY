@@ -2,7 +2,7 @@ package pl.sda.MinesWeeper;
 
 import java.util.Scanner;
 
-class Minesweeper {
+class MinesweeperInConsole {
     private int rowSize;
     private int colSize;
     private int numberOfBombs;
@@ -148,13 +148,15 @@ class Minesweeper {
         int x = userTypeRow();
         int y = userTypeColumn();
         if (choice == 1) {
+
             if (filledArray[x][y].equals("0")) {
                 fillArrayWithRecursionIfYouHitZero(x, y);
             } else if (filledArray[x][y].equals("B")) {
                 playerArray[x][y] = "X";
                 gameLost = true;
             } else {
-                playerArray[x][y] = filledArray[x][y];
+                if (playerArray[x][y].equals("B") && !filledArray[x][y].equals("B")) currentNumberOfBombs--;
+                else playerArray[x][y] = filledArray[x][y];
             }
         }
         if (choice == 2) setBomb(x, y);
@@ -225,8 +227,8 @@ class Minesweeper {
     }
 
     private void fillArrayWithRecursionIfYouHitZero(int x, int y) {
+
         printNumbersAround(x, y);
-        if (x >= 0 && x < rowSize && y >= 0 && y < colSize) {
             if (x > 0) {
                 int indexX = x - 1;
                 if (canDoRecursion(indexX, y)) fillArrayWithRecursionIfYouHitZero(indexX, y);
@@ -265,7 +267,6 @@ class Minesweeper {
                 if (canDoRecursion(indexX, indexY)) fillArrayWithRecursionIfYouHitZero(indexX, indexY);
             }
         }
-    }
 
     void playAGame() {
         createCompletedAraay();

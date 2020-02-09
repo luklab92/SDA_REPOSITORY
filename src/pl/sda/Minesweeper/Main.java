@@ -1,4 +1,4 @@
-package pl.sda.MinesWeeper;
+package pl.sda.Minesweeper;
 
 public class Main {
     public static void main(String[] args) {

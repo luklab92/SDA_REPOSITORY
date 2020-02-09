@@ -1,4 +1,4 @@
-package pl.sda.MinesWeeper;
+package pl.sda.Minesweeper;
 
 import javax.swing.*;
 
@@ -6,7 +6,7 @@ public class Button extends JToggleButton {
     private int value;
     private final int row;
     private final int column;
-    private boolean revealed;
+    private boolean isOpen;
 
     public Button(int row, int column) {
         super();
@@ -30,12 +30,12 @@ public class Button extends JToggleButton {
         return column;
     }
 
-    public boolean isRevealed() {
-        return revealed;
+    public boolean isOpen() {
+        return isOpen;
     }
 
-    public void setRevealed(boolean revealed) {
-        this.revealed = revealed;
+    public void setOpen(boolean open) {
+        this.isOpen = open;
     }
 
 }

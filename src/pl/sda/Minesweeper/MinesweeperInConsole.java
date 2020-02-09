@@ -1,4 +1,4 @@
-package pl.sda.MinesWeeper;
+package pl.sda.Minesweeper;
 
 import java.util.Scanner;
 
